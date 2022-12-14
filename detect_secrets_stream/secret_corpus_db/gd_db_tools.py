@@ -130,7 +130,7 @@ def connect_db():
         print(f'Connecting to database\n	-> {gd_db_database} on {gd_db_hostname}:{gd_db_port}')
         __conn = psycopg2.connect(conn_string)
         print('Connected!\n')
-        return(__conn)
+        return (__conn)
     except Exception as e:
         print('Unable to connect to the database.')
         raise e
@@ -164,7 +164,7 @@ def create_id(conn, user_id, user_auth_string1, user_auth_string2):
 
     if '-' in user_id:
         print(f"User: {user_id} not created - IDs cannot contain '-', use '_' instead.")
-        return(1)
+        return (1)
 
     db_conf = ConfUtil.load_db_conf()
     gd_db_database = db_conf['database']
@@ -193,11 +193,11 @@ def create_id(conn, user_id, user_auth_string1, user_auth_string2):
                 cur.close()
         print(f'Created {user_id} user')
 
-        return(0)
+        return (0)
     except (Exception, psycopg2.DatabaseError) as error:
         print('SQL error:', error)
         print(f"User {user_id} won't create!")
-        return(error)
+        return (error)
 
 
 def drop_id(conn, user_id):
@@ -238,7 +238,7 @@ def drop_id(conn, user_id):
     except (Exception, psycopg2.DatabaseError) as error:
         print('SQL error:', error)
         print(f"User {user_id} won't delete!")
-        return(error)
+        return (error)
 
 
 # from https://cloud.ibm.com/apidocs/key-protect?code=python
@@ -278,14 +278,14 @@ def kp_create_gd_user_key(user_id):
 
         if rv == 201:
             print(f'Successfully created key {user_id}')
-            return(((results['resources'])[0])['id'])
+            return (((results['resources'])[0])['id'])
         else:
-            return(1)
+            return (1)
 
     except (requests.exceptions.RequestException, ConnectionResetError) as error:
         print('KP REST request error:', error)
         print(f'Unable to create key: {user_id}')
-        return(error)
+        return (error)
 
 
 # from https://cloud.ibm.com/apidocs/key-protect?code=python
@@ -321,18 +321,18 @@ def kp_delete_gd_user_key(user_id):
             print(f'Deleting key ID: {key_id}')
         else:
             print(f'Key: {user_id} not found')
-            return(1)
+            return (1)
         url = 'https://' + gd_kp_region + '.kms.cloud.ibm.com/api/v2/keys/' + key_id
         rc = requests.request('DELETE', url, headers=headers)
         if rc.status_code == 204:
             print(f'Key: {user_id}, ID: {key_id} successfully deleted')
         else:
             print(f'Key: {user_id}, ID: {key_id} *NOT* deleted')
-        return(rc.status_code)
+        return (rc.status_code)
     except (requests.exceptions.RequestException, ConnectionResetError) as error:
         print('KP REST request error:', error)
         print(f'Unable to delete key for {user_id}')
-        return(error)
+        return (error)
 
 
 # from https://cloud.ibm.com/apidocs/key-protect?code=python
@@ -369,14 +369,14 @@ def kp_get_gd_user_key(user_id):
         rv = results_raw.status_code
         print(rv)
         if rv == 200:
-            return(((results['resources'])[0])['payload'])
+            return (((results['resources'])[0])['payload'])
         else:
-            return(1)
+            return (1)
 
     except (requests.exceptions.RequestException, ConnectionResetError) as error:
         print('KP REST request error:', error)
         print(f'Unable to retrieve key for {user_id}')
-        return(error)
+        return (error)
 
 
 def create_table(conn, table_name, table_create_string):
@@ -393,11 +393,11 @@ def create_table(conn, table_name, table_create_string):
         print(f'Created {table_name} table')
         conn.commit()
         cur.close()
-        return()
+        return ()
     except (Exception, psycopg2.DatabaseError) as error:
         print('SQL error:', error)
         print(f"{table_name} table won't create!")
-        return(error)
+        return (error)
 
 
 def create_tables(conn):
@@ -474,7 +474,7 @@ def add_token_row(
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print('SQL error:', error)
-        return(error)
+        return (error)
     return token_id
 
 
@@ -1258,7 +1258,7 @@ def list_rows(conn, table_name):
         print('\n')
     except (Exception, psycopg2.DatabaseError) as error:
         print('SQL error:', error)
-        return(error)
+        return (error)
 
 
 def tear_down_table(conn, table_name):
@@ -1281,11 +1281,11 @@ def tear_down_table(conn, table_name):
             print('Table successfully dropped')
         except (Exception, psycopg2.DatabaseError) as error:
             print('SQL error:', error)
-            return(error)
+            return (error)
 
     else:
         print("Ok I won't then")
-    return()
+    return ()
 
 
 def main():
@@ -1334,10 +1334,10 @@ def main():
 
         disconnect_db(conn)
         print('\nSuccess exiting')
-        return(True)
+        return (True)
     except Exception:
         print('\nOrchestration error exiting')
-        return(False)
+        return (False)
 
 
 if __name__ == '__main__':

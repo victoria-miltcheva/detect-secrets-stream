@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest = "==7.1.1"
+pytest = "==7.2.0"
 responses = "==0.20.0"
 mock = "==4.0.3"
 unittest2 = "==1.1.0"
@@ -33,7 +33,8 @@ gunicorn = "==20.1.0"
 gevent = "==21.12.0"
 pyjwt = "==2.4.0"
 ibm-db = "==3.1.1"
-detect-secrets = {ref = "0.13.1+ibm.47.dss", git = "https://github.com/ibm/detect-secrets.git"}
+detect-secrets = {ref = "0.13.1+ibm.55.dss", git = "https://github.com/ibm/detect-secrets.git"}
+pytest = "==7.2.0"
 
 [requires]
 python_version = "3.9"

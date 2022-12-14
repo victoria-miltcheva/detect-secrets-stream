@@ -1,6 +1,9 @@
 MAKEFLAGS += --warn-undefined-variables
 SHELL = /bin/bash
 
+CONTAINER_REGISTRY = icr.io
+IBM_CLOUD_REGION = us-east
+
 SKAFFOLD_VERBOSITY ?= info
 
 TEST_DB_CONTAINER_NAME ?= gd_test_postgres
@@ -131,7 +134,7 @@ ifdef TRAVIS
 endif
 	# ignore 41002: coverage <6.0b1 resolved (5.5 installed)! it's part of pytest-cov
 	# which does not have a version containing the fix.
-	pipenv check --ignore 41002
+	pipenv check --ignore 41002 --ignore 51499
 	pre-commit run --all-files --show-diff-on-failure
 
 .PHONY: start-db_metrics
@@ -144,14 +147,13 @@ start-scan_worker:
 
 .PHONY: login
 login:
-ifndef DOCKER_REG_API_KEY
-	$(error env var DOCKER_REG_API_KEY is not set)
+ifndef IBM_CLOUD_API_KEY
+	$(error env var IBM_CLOUD_API_KEY is not set)
 endif
-ifndef DOCKER_REG_USERNAME
-	$(error env var DOCKER_REG_USERNAME is not set)
-endif
+	# login to ibm cloud
+	@ibmcloud login --apikey $(IBM_CLOUD_API_KEY) -a https://cloud.ibm.com -r $(IBM_CLOUD_REGION)
 	# login to the docker registry
-	@echo $(DOCKER_REG_API_KEY) | docker login -u $(DOCKER_REG_USERNAME) --password-stdin
+	@echo $(IBM_CLOUD_API_KEY) | docker login -u iamapikey --password-stdin $(CONTAINER_REGISTRY)
 
 .PHONY: build-images
 build-images:
