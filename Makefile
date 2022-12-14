@@ -73,6 +73,12 @@ setup: setup-trivy setup-deploy-tools
 	pip install pipenv
 	PIP_IGNORE_INSTALLED=1 pipenv install --dev --deploy --ignore-pipfile
 
+	# download and install a few ibm cloud cli tools
+	curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+	ibmcloud -v
+	ibmcloud plugin install container-service -f
+	ibmcloud plugin install container-registry
+
 .PHONY: start-local-test-db
 start-local-test-db: stop-local-test-db
 	docker run -p 54320:5432 -d --name $(TEST_DB_CONTAINER_NAME) -e POSTGRES_HOST_AUTH_METHOD=trust postgres:10
@@ -154,6 +160,9 @@ endif
 	@ibmcloud login --apikey $(IBM_CLOUD_API_KEY) -a https://cloud.ibm.com -r $(IBM_CLOUD_REGION)
 	# login to the docker registry
 	@echo $(IBM_CLOUD_API_KEY) | docker login -u iamapikey --password-stdin $(CONTAINER_REGISTRY)
+	# login to cr and set region
+	@ibmcloud cr region-set global
+	@ibmcloud cr login
 
 .PHONY: build-images
 build-images:
