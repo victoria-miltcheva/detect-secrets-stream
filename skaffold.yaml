@@ -7,8 +7,7 @@ build:
   local:
     useDockerCLI: true
   tagPolicy:
-    envTemplate:
-      template: "{{.VERSION}}"
+    sha256: {}
   artifacts:
   - image: icr.io/git-defenders/detect-secrets-stream
     context: .
