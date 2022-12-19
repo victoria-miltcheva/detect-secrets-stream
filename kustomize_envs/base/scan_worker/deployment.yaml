@@ -60,7 +60,7 @@ spec:
               path: email.conf
       containers:
       - name: scan-worker
-        image: ibmcom/detect-secrets-stream:latest
+        image: icr.io/git-defenders/detect-secrets-stream:latest
         imagePullPolicy: IfNotPresent
         command: ["python"]
         args: ["-m", "detect_secrets_stream.scan_worker.app"]

@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: secret-util
-          image: ibmcom/detect-secrets-stream:v0.4.3
+          image: icr.io/git-defenders/detect-secrets-stream:latest
           # Once exec into the container
           # run "python -m detect_secrets_stream.util.secret_util" for help
           command: ["sleep"]

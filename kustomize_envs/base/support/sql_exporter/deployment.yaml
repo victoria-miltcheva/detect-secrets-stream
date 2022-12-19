@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
           - name: sqlexporter
-            image: "ibmcom/detect-secrets-stream:latest"
+            image: "icr.io/git-defenders/detect-secrets-stream:latest"
             imagePullPolicy: IfNotPresent
             command: ["python"]
             args: ["-m", "detect_secrets_stream.sql_exporter.db_metrics"]

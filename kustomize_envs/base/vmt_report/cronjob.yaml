@@ -10,7 +10,7 @@ spec:
         spec:
           containers:
           - name: vmt-report
-            image: ibmcom/detect-secrets-stream:latest
+            image: icr.io/git-defenders/detect-secrets-stream:latest
             imagePullPolicy: IfNotPresent
             command: ["python"]
             args: ["-m", "detect_secrets_stream.notification.vmt_report"]

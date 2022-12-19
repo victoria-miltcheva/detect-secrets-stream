@@ -72,7 +72,7 @@ spec:
             path: revoker_urls.conf
       containers:
           - name: gd-revoker
-            image: "ibmcom/detect-secrets-stream:latest"
+            image: "icr.io/git-defenders/detect-secrets-stream:latest"
             command: ["/code/detect_secrets_stream/gd_revoker/docker-entrypoint.sh"]
             imagePullPolicy: IfNotPresent
             env:
