@@ -71,7 +71,7 @@ setup-deploy-tools:
 setup: setup-trivy setup-deploy-tools
 	pip install --upgrade pip
 	pip install "setuptools>=65.5.1" pipenv
-	PIP_IGNORE_INSTALLED=1 pipenv install --dev --deploy #--ignore-pipfile
+	PIP_IGNORE_INSTALLED=1 pipenv install --dev --deploy --ignore-pipfile
 
 	# download and install a few ibm cloud cli tools
 	curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
