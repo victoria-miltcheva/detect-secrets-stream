@@ -16,6 +16,7 @@ pep8-naming = "==0.12.1"
 pytest-cov = "==3.0.0"
 
 [packages]
+pipenv = "==2022.3.28"
 logmatic-python = "==0.1.7"
 confluent-kafka = "==1.8.2"
 jaeger-client = "==4.8.0"
