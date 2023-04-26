@@ -115,3 +115,7 @@ venv.bak/
 # sample file
 sample.csv
 .envrc
+
+# cosign
+cosign.pub
+cosign.key

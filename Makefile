@@ -43,11 +43,21 @@ COVERAGE := pipenv run coverage
 # Only set if not defined
 VERSION ?= dev
 
+# Docker related
+DOCKER_REGISTRY_ICR := icr.io
+DOCKER_USER_ICR := iamapikey
+DOCKER_PASS_ICR := $(IBM_CLOUD_API_KEY)
+
 # Trivy related
 TRIVY ?= trivy
 TRIVY_VERSION := $(shell curl -s "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
 TRIVY_OS := $(shell uname | sed 's/Darwin/macOS/' )
 TRIVY_ARCH := $(shell uname -m | cut -d_ -f2 )
+
+# Cosign related
+COSIGN ?= /tmp/cosign
+COSIGN_VERSION := $(shell curl -s "https://api.github.com/repos/sigstore/cosign/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+
 
 .PHONY: setup-trivy
 setup-trivy:
@@ -56,6 +66,11 @@ ifdef TRAVIS
 	# Scanning Redhat / centOS images requires rpm
 	sudo apt update && sudo apt install rpm -y
 endif
+
+.PHONY: setup-cosign
+setup-cosign:
+	curl -sSfL https://github.com/sigstore/cosign/releases/download/v$(COSIGN_VERSION)/cosign-linux-amd64  -o $(COSIGN)
+	chmod +x $(COSIGN)
 
 .PHONY: setup-deploy-tools
 setup-deploy-tools:
@@ -68,7 +83,7 @@ setup-deploy-tools:
 	kustomize version
 
 .PHONY: setup
-setup: setup-trivy setup-deploy-tools
+setup: setup-trivy setup-cosign setup-deploy-tools
 	pip install --upgrade pip
 	pip install "setuptools>=65.5.1" pipenv
 	PIP_IGNORE_INSTALLED=1 pipenv install --dev --deploy --ignore-pipfile
@@ -163,6 +178,8 @@ endif
 	# login to cr and set region
 	@ibmcloud cr region-set global
 	@ibmcloud cr login
+	# login to cosign
+	@echo $(DOCKER_PASS_ICR) | $(COSIGN) login -u $(DOCKER_USER_ICR) --password-stdin $(DOCKER_REGISTRY_ICR)
 
 .PHONY: build-images
 build-images:
@@ -182,6 +199,13 @@ quality-images:
 .PHONY: deploy
 deploy:
 	skaffold build
+	for image in $(shell skaffold build -q --dry-run | jq -r .builds[].tag); do \
+		@echo "Signing image $${image}"; \
+		$(COSIGN) sign --key env://COSIGN_PRIVATE_KEY --yes $${image}; \
+
+		@echo "Verifying image $${image}; \
+		$(COSIGN) verify --key env://COSIGN_PUBLIC_KEY $${image}; \
+	done;
 
 .PHONY: clean
 clean:
